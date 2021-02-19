@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "cloudstate/entity_key.proto";
+import "google/api/annotations.proto";
+import "google/api/http.proto";
+
+package com.example.monitor;
+
+message NewMetricValue {
+    string device_id = 1 [(.cloudstate.entity_key) = true];
+    int64 timestamp = 2;
+    float new_value = 3;
+}
+
+message GetCurrentMetricValue {
+    string device_id = 1 [(.cloudstate.entity_key) = true];
+}
+
+message MetricValue {
+    float current_value = 1;
+    float prior_value = 2;
+    Statistics stats_for_recent_history = 3;
+    Statistics stats_for_time_bucket = 4;
+    
+    //repeated past_values = 3;
+}
+
+message Statistics {
+    float median = 1;
+    float mean = 2;
+    float stdev = 3;
+    repeated float predictions = 4;
+}
+
+service DeviceMonitor {
+    rpc UpdateMetric(NewMetricValue) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/deviceMonitors/{device_id}/updateMetric",
+            body: "*",
+        };
+    }
+
+    rpc GetCurrentValue(GetCurrentMetricValue) returns (MetricValue) {
+        option (google.api.http) = {
+          get: "/deviceMonitors/{device_id}"
+        };
+    }
+}
