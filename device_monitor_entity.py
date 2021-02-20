@@ -37,9 +37,9 @@ entity = EventSourcedEntity(_DEVICEMONITOR, [FILE_DESCRIPTOR], init)
 # helper function
 def five_minute_bucket_from_time(timestamp):
     dt = datetime.datetime.fromtimestamp(timestamp)
-    print(monitor_constants.BUCKET_TYPE == 'minute')
+    #print(monitor_constants.BUCKET_TYPE == 'minute')
     key = str(dt.hour) + '_' + str(math.floor(dt.minute if monitor_constants.BUCKET_TYPE == 'minute' else dt.second / monitor_constants.BUCKET))
-    print(key)
+    #print(key)
     return key
 
 # helper function
